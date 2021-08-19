@@ -1,38 +1,31 @@
-// select the user input field
-var idSelect = d3.select("#selDataset");
-
 function init() {
-    // D3 library to read in sample data
-    d3.json("samples.json").then((data => {
-    console.log(data);    
-        //Insert the 
-        data.names.forEach((name => {
-            var option = idSelect.append("option");
-            option.text(name);
-        })); 
-        // get the first ID from the list for initial charts as a default
-        var initId = idSelect.property("value")
+    var dropdown = d3.select("#selDataset")
+    d3.json("samples.json").then(data => {
+        var patientIDs = data.names;
+        patientIDs.forEach(patientID => {
+            dropdown.append("option").text(patientID).property("value", patientID)
+        })
+        //buildCharts(patientIDs[0]);
+        DemoInfo(patientIDs[0]);
+    });
+};
 
-        // plot charts with initial ID
-        //plotCharts(initId);
+function DemoInfo(patientID) {
+    var InfoBox = d3.select("#sample-metadata");
+    d3.json("samples.json").then(data => {
+        var metadata = data.metadata
+        var filteredMetadata = metadata.filter(bacteriaInfo => bacteriaInfo.id == patientID)[0]
 
-    })); // close .then()
+        console.log(filteredMetadata)
+        Object.entries(filteredMetadata).forEach(([key, value]) => {
+            InfoBox.append("p").text(`${key}: ${value}`)
+        })
+    })
+}
 
-} // close init() function
+function optionChanged(patientID) {
+    console.log(patientID);
+    DemoInfo(patientID);
+}
 
-// create a function to reset divs to prepare for new data
-function resetData() {
-
-    // ----------------------------------
-    // CLEAR THE DATA
-    // ----------------------------------
-
-    demographicsTable.html("");
-    barChart.html("");
-    bubbleChart.html("");
-    gaugeChart.html("");
-
-}; // close resetData()
-
-// call the init() function for default data
 init();
