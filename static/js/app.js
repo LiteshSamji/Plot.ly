@@ -14,6 +14,7 @@ function init() {
         Bubblechart(initialdata)
         var metadata = data.metadata[0]
         demoinfo(metadata)
+        Gaugechart(metadata)
     });
 }
 
@@ -72,9 +73,43 @@ function Bubblechart(tableData) {
     };
      // Display plot
     Plotly.newPlot('bubble', data, layout);
-}
 
-//Step 4 Display the sample metadata i.e an individual's demographic information
+}//Advanced Challenge
+function Gaugechart(tabledata) {
+// GAUGE CHART
+        // Create variable for washing frequency
+        var washFreq = tabledata.wfreq
+
+        // Create the trace
+        var gauge_data = [
+            {
+                domain: { x: [0, 1], y: [0, 1] },
+                value: washFreq,
+                title: { text: "Washing Frequency (Times per Week)" },
+                type: "indicator",
+                mode: "gauge+number",
+                gauge: {
+                    bar: {color: 'green'},
+                    axis: { range: [null, 9] },
+                    steps: [
+                        { range: [0, 2], color: 'rgb(255,255,217)' },
+                        { range: [2, 4], color: 'rgb(237,248,217)' },
+                        { range: [4, 6], color: 'rgb(199,233,180)' },
+                        { range: [6, 8], color: 'rgb(127,205,187)' },
+                        { range: [8, 9], color: 'rgb(65,182,196)' },
+                    ],                  
+                }
+            }
+        ];
+
+        // Define Plot layout
+        var gauge_layout = { width: 550, height: 400, margin: { t: 0, b: 0 } };
+
+        // Display plot
+        Plotly.newPlot('gauge', gauge_data, gauge_layout);
+}
+    
+    //Step 4 Display the sample metadata i.e an individual's demographic information
 // Display each key-value pair from the metadata JSON object somewhere on the page.
 function demoinfo(tableData) {
     console.log(tableData)
@@ -94,8 +129,9 @@ function optionChanged(selectedID) {
         console.log(filtereddata)
         Barchart(filtereddata[0])
         Bubblechart(filtereddata[0])
-        var barfilteredmeta = data.metadata.filter(row => row.id == selectedID)
-        demoinfo(barfilteredmeta[0])
+        var filteredmeta = data.metadata.filter(row => row.id == selectedID)
+        demoinfo(filteredmeta[0])
+        Gaugechart(filteredmeta[0])
     })
 }
 
